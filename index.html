@@ -4,59 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
-    <link rel="stylesheet" href="static/style.css">
+
+    <!-- Flask CSS Link -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-    <!-- Navigation Bar -->
+
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-container">
-            <span class="navbar-title">ChatBot</span>
-            <ul class="navbar-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </div>
+        <span class="navbar-title">🤖 ChatBot</span>
     </nav>
 
     <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="about-content">
-            <h2>About Chatbot</h2>
-            <p>
-                This is a simple chatbot built to answer your queries and assist you in various tasks.
-                It is designed to be easy to interact with and can understand and respond to your questions.
-                Try asking anything, and the bot will do its best to assist you!
-            </p>
-        </div>
+    <section class="about-section">
+        <h2>About Chatbot</h2>
+        <p>
+            This is a simple chatbot built using Flask. 
+            Ask anything and get instant responses!
+        </p>
     </section>
 
-    <!-- Chatbox Section -->
+    <!-- Chatbox -->
     <div class="chat-container">
         <div class="chat-box" id="chat-box"></div>
+
         <div class="input-container">
-            <input type="text" id="user" placeholder="Type a message..." autofocus>
+            <input type="text" id="user" placeholder="Type your message..." autofocus>
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
 
+    <!-- Script -->
     <script>
-        function sendMessage() {
-            var userMessage = document.getElementById("user").value;
-            if (userMessage) {
-                var chatBox = document.getElementById("chat-box");
-                chatBox.innerHTML += "<div class='user-message'>" + userMessage + "</div>";
-                document.getElementById("user").value = "";
-                chatBox.scrollTop = chatBox.scrollHeight;
+        const input = document.getElementById("user");
 
-                fetch(`/get?msg=${userMessage}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        chatBox.innerHTML += "<div class='bot-message'>" + data + "</div>";
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    });
+        // Enter key support
+        input.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                sendMessage();
             }
+        });
+
+        function sendMessage() {
+            let userMessage = input.value;
+
+            if (userMessage.trim() === "") return;
+
+            let chatBox = document.getElementById("chat-box");
+
+            // User message
+            chatBox.innerHTML += `<div class='user-message'>${userMessage}</div>`;
+            input.value = "";
+
+            // Auto scroll
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Send to backend
+            fetch(`/get?msg=${userMessage}`)
+                .then(response => response.text())
+                .then(data => {
+                    chatBox.innerHTML += `<div class='bot-message'>${data}</div>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                });
         }
     </script>
+
 </body>
 </html>
