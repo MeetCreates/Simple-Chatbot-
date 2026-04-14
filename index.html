@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <span class="navbar-title">ChatBot</span>
+            <ul class="navbar-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <h2>About Chatbot</h2>
+            <p>
+                This is a simple chatbot built to answer your queries and assist you in various tasks.
+                It is designed to be easy to interact with and can understand and respond to your questions.
+                Try asking anything, and the bot will do its best to assist you!
+            </p>
+        </div>
+    </section>
+
+    <!-- Chatbox Section -->
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="user" placeholder="Type a message..." autofocus>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userMessage = document.getElementById("user").value;
+            if (userMessage) {
+                var chatBox = document.getElementById("chat-box");
+                chatBox.innerHTML += "<div class='user-message'>" + userMessage + "</div>";
+                document.getElementById("user").value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                fetch(`/get?msg=${userMessage}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        chatBox.innerHTML += "<div class='bot-message'>" + data + "</div>";
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
